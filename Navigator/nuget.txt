@@ -1,0 +1,2 @@
+﻿nuget pack Navigator.csproj -Prop Configuration=Release
+nuget push Mark.Navigator.1.0.3.0.nupkg
