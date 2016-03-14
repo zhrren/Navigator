@@ -16,6 +16,14 @@ namespace Mark.Navigator
         public string Group { get; set; }
         public string Url { get; set; }
 
+        public bool VerifyName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(Name) || Name == "*")
+                return true;
+            else
+                return string.Equals(Name, name, StringComparison.OrdinalIgnoreCase);
+        }
+
         public bool VerifyUser(string user, List<Group> groupList)
         {
             if (!string.IsNullOrWhiteSpace(user))

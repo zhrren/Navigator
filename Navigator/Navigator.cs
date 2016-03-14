@@ -22,7 +22,7 @@ namespace Mark.Navigator
             List<Native> allNative = new List<Native>();
             _releaseList.ForEach(x => allNative.AddRange(x.Native));
 
-            List<Native> namedNative = allNative.Where(x => string.Equals(x.Name, nativeName, StringComparison.OrdinalIgnoreCase)).ToList();
+            List<Native> namedNative = allNative.Where(x => x.VerifyName(nativeName)).ToList();
 
             Native verifyNative = namedNative.Where(x =>
                 x.VerifyVersion(nativeVersion)

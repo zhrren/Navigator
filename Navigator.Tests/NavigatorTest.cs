@@ -102,6 +102,27 @@ namespace Navigator.Tests
             Assert.AreEqual("url:android:3.0", vc.Match("android", "3.0", "zhrren").Url);
         }
 
+        [TestMethod]
+        public void 所有平台()
+        {
+            var rules = new List<Release>()
+            {
+                CreatePublish("1.0",
+                    CreateRule("*","1.0","*","url:1.0"), null),
+                CreatePublish("2.0",
+                    CreateRule("*","2.0","*","url:2.0"), null),
+                CreatePublish("3.0",
+                    CreateRule("*","3.0","*","url:3.0"), null)
+            };
+            var vc = CreateNavigator(rules, null);
+            Assert.AreEqual("url:1.0", vc.Match("android", "1.0", "zhrren").Url);
+            Assert.AreEqual("url:1.0", vc.Match("ios", "1.0", "zhrren").Url);
+            Assert.AreEqual("url:2.0", vc.Match("android", "2.0", "zhrren").Url);
+            Assert.AreEqual("url:2.0", vc.Match("ios", "2.0", "zhrren").Url);
+            Assert.AreEqual("url:3.0", vc.Match("android", "3.0", "zhrren").Url);
+            Assert.AreEqual("url:3.0", vc.Match("ios", "3.0", "zhrren").Url);
+        }
+
         #region 工具方法
         private Mark.Navigator.Navigator CreateNavigator(List<Release> releases, List<Group> groups)
         {
@@ -110,15 +131,18 @@ namespace Navigator.Tests
         }
         private Release CreatePublish(string version, Native androidNative, Native iosNative)
         {
-            return new Release()
+            var release = new Release()
             {
                 Version = version,
-                Native = new List<Native>(){
-                      androidNative,iosNative
-                  }
+                Native = new List<Native>()
             };
+
+            if (androidNative != null) release.Native.Add(androidNative);
+            if (iosNative != null) release.Native.Add(iosNative);
+
+            return release;
         }
-        private Native CreateRule(string app, string version, string user, string url, string group=null)
+        private Native CreateRule(string app, string version, string user, string url, string group = null)
         {
             return new Native()
             {
