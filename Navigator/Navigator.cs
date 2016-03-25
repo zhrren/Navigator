@@ -20,17 +20,26 @@ namespace Mark.Navigator
         public Native Match(string nativeName, string nativeVersion, string uid)
         {
             List<Native> allNative = new List<Native>();
-            _releaseList.ForEach(x => allNative.AddRange(x.Native));
+            _releaseList.ForEach(x =>
+            {
+                x.Native.ForEach(y => y.ReleaseVersion = x.Version);
+                allNative.AddRange(x.Native);
+            });
 
             List<Native> namedNative = allNative.Where(x => x.VerifyName(nativeName)).ToList();
 
-            Native verifyNative = namedNative.Where(x =>
+            var resultList = namedNative.Where(x =>
                 x.VerifyVersion(nativeVersion)
-                && x.VerifyUser(uid, _groupList))
-            .OrderByDescending(x => x.Version)
-            .FirstOrDefault();
+                && x.VerifyUser(uid, _groupList));
+            var resultItem = resultList.OrderByDescending(x => x.Version).FirstOrDefault();
+            if (resultItem != null)
+            {
+                resultItem = resultList.Where(x => x.Version == resultItem.Version)
+                    .OrderByDescending(x => x.ReleaseVersion)
+                    .FirstOrDefault();
+            }
 
-            return verifyNative == null ? namedNative.FirstOrDefault() : verifyNative;
+            return resultItem == null ? namedNative.FirstOrDefault() : resultItem;
         }
     }
 }

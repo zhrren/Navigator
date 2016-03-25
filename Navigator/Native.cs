@@ -12,6 +12,7 @@ namespace Mark.Navigator
 
         public string Name { get; set; }
         public string Version { get; set; }
+        public string ReleaseVersion { get; set; }
         public string User { get; set; }
         public string Group { get; set; }
         public string Url { get; set; }
