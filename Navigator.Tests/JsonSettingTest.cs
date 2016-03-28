@@ -37,9 +37,15 @@ namespace Navigator.Tests
             var match = vc.Match("android", "4.0", "00000000000");
             Assert.AreEqual("http://m.wfzkd.com/v/1.0.0/#!/auth?4.0&", match.Url);
 
-
             match = vc.Match("ios", "4.0", "");
             Assert.AreEqual("http://m.wfzkd.com/v/1.0.0/#!/auth?4.0&", match.Url);
+
+
+            match = vc.Match("ios", "2.8.6", "");
+            Assert.AreEqual("http://www.wfzkd.com/auth?", match.Url);
+
+            match = vc.Match("ios", "2.8.6", "18925179135");
+            Assert.AreEqual("http://m.wfzkd.com/v/1.0.0/#!/auth?", match.Url);
         }
     }
 }
