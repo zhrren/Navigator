@@ -27,5 +27,15 @@ namespace Navigator.Tests
             var match = vc.Match("ios", "4.0.0", "11111111111");
             Assert.AreEqual("http://m.wfzkd.com/v/1.1.0/#!/auth?", match.Url);
         }
+
+        [TestMethod]
+        public void 发布新版本()
+        {
+            SettingsManager<Settings> settings = new SettingsManager<Settings>();
+            var renew = settings.Renew("发布新版本.json");
+            var vc = new Mark.Navigator.Navigator(renew.Release, null);
+            var match = vc.Match("android", "4.0", "00000000000");
+            Assert.AreEqual("http://m.wfzkd.com/v/1.0.0/#!/auth?4.0&", match.Url);
+        }
     }
 }

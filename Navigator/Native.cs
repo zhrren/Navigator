@@ -52,22 +52,28 @@ namespace Mark.Navigator
 
         public bool VerifyVersion(string version)
         {
-            Regex reg = new Regex(@"([0-9\.]*)");
-            var match = reg.Match(version);
-            var validVersion = match.Groups[1].Value;
-
-            var ver = new Version(validVersion);
-            return ver >= this.VersionObject;
+            return ParseVersion(version) >= FormatVersion(Version);
         }
 
-        private Version VersionObject
+        private Version ParseVersion(string version)
         {
-            get
-            {
-                if (_version == null)
-                    _version = new Version(Version);
-                return _version;
-            }
+            Regex reg = new Regex(@"([0-9\.]*)");
+            var match = reg.Match(version);
+            var ver = match.Groups[1].Value;
+            return FormatVersion(ver);
+        }
+
+        private Version FormatVersion(Version version)
+        {
+            return new Version(
+                version.Major >= 0 ? version.Major : 0,
+                version.Minor >= 0 ? version.Minor : 0,
+                version.Build >= 0 ? version.Build : 0,
+                version.Revision >= 0 ? version.Revision : 0);
+        }
+        private Version FormatVersion(string version)
+        {
+            return FormatVersion(new Version(version));
         }
     }
 }
