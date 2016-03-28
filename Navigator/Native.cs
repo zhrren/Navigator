@@ -27,24 +27,22 @@ namespace Mark.Navigator
 
         public bool VerifyUser(string user, List<Group> groupList)
         {
-            if (!string.IsNullOrWhiteSpace(user))
+            if (user == null) user = "";
+            if (!string.IsNullOrWhiteSpace(User))
             {
-                if (!string.IsNullOrWhiteSpace(User))
-                {
-                    if (User == "*") return true;
-                    if (this.User.Split(',').Any(x => x.Equals(user, StringComparison.OrdinalIgnoreCase)))
-                        return true;
-                }
+                if (User == "*") return true;
+                if (this.User.Split(',').Any(x => x.Equals(user, StringComparison.OrdinalIgnoreCase)))
+                    return true;
+            }
 
-                if (!string.IsNullOrWhiteSpace(Group) && groupList != null && groupList.Count > 0)
-                {
-                    if (Group == "*" && groupList.Any(x => x.User.Any(u => user.Equals(u, StringComparison.OrdinalIgnoreCase))))
-                        return true;
+            if (!string.IsNullOrWhiteSpace(Group) && groupList != null && groupList.Count > 0)
+            {
+                if (Group == "*" && groupList.Any(x => x.User.Any(u => user.Equals(u, StringComparison.OrdinalIgnoreCase))))
+                    return true;
 
-                    var group = groupList.FirstOrDefault(x => Group.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
-                    if (group != null && group.User.Any(x => user.Equals(x, StringComparison.OrdinalIgnoreCase)))
-                        return true;
-                }
+                var group = groupList.FirstOrDefault(x => Group.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
+                if (group != null && group.User.Any(x => user.Equals(x, StringComparison.OrdinalIgnoreCase)))
+                    return true;
             }
 
             return false;

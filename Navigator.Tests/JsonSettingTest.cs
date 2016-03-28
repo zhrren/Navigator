@@ -36,6 +36,10 @@ namespace Navigator.Tests
             var vc = new Mark.Navigator.Navigator(renew.Release, null);
             var match = vc.Match("android", "4.0", "00000000000");
             Assert.AreEqual("http://m.wfzkd.com/v/1.0.0/#!/auth?4.0&", match.Url);
+
+
+            match = vc.Match("ios", "4.0", "");
+            Assert.AreEqual("http://m.wfzkd.com/v/1.0.0/#!/auth?4.0&", match.Url);
         }
     }
 }
