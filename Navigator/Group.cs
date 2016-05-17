@@ -7,6 +7,7 @@ namespace Mark.Navigator
 {
     public class Group
     {
+        public Group() { }
         public Group(string name, string[] user)
         {
             Name = name;
