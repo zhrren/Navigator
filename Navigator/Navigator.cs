@@ -17,29 +17,64 @@ namespace Mark.Navigator
             _groupList = groups;
         }
 
-        public Native Match(string nativeName, string nativeVersion, string uid)
+        public Entry Match(string nativeName, string nativeVersion, string uid)
         {
-            List<Native> allNative = new List<Native>();
+            List<Entry> entries = new List<Entry>();
             _releaseList.ForEach(x =>
             {
-                x.Native.ForEach(y => y.ReleaseVersion = x.Version);
-                allNative.AddRange(x.Native);
+                x.Native.ForEach(n =>
+                {
+                    var entry = new Entry(n.Name, n.User, n.Group, n.Url, n.Version, x.Version);
+                    entries.Add(entry);
+                });
             });
 
-            List<Native> namedNative = allNative.Where(x => x.VerifyName(nativeName)).ToList();
+            List<Entry> namedNative = entries.Where(x => VerifyName(x, nativeName)).ToList();
 
             var resultList = namedNative.Where(x =>
-                x.VerifyVersion(nativeVersion)
-                && x.VerifyUser(uid, _groupList));
-            var resultItem = resultList.OrderByDescending(x => x.Version).FirstOrDefault();
+                Entry.ParseVersion(nativeVersion) >= x.NativeVersion
+                && VerifyUser(x, uid, _groupList)).ToList();
+            var resultItem = resultList.OrderByDescending(x => x.NativeVersion).FirstOrDefault();
             if (resultItem != null)
             {
-                resultItem = resultList.Where(x => x.Version == resultItem.Version)
+                resultItem = resultList.Where(x => x.NativeVersion == resultItem.NativeVersion)
                     .OrderByDescending(x => x.ReleaseVersion)
                     .FirstOrDefault();
             }
 
             return resultItem == null ? namedNative.FirstOrDefault() : resultItem;
         }
+
+        private bool VerifyName(Entry entry, string name)
+        {
+            if (string.IsNullOrWhiteSpace(entry.Name) || entry.Name == "*")
+                return true;
+            else
+                return string.Equals(entry.Name, name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool VerifyUser(Entry entry, string user, List<Group> groupList)
+        {
+            if (user == null) user = "";
+            if (!string.IsNullOrWhiteSpace(entry.User))
+            {
+                if (entry.User == "*") return true;
+                if (entry.User.Split(',').Any(x => x.Equals(user, StringComparison.OrdinalIgnoreCase)))
+                    return true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(entry.Group) && groupList != null && groupList.Count > 0)
+            {
+                if (entry.Group == "*" && groupList.Any(x => x.User.Any(u => user.Equals(u, StringComparison.OrdinalIgnoreCase))))
+                    return true;
+
+                var group = groupList.FirstOrDefault(x => x.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
+                if (group != null && group.User.Any(x => user.Equals(x, StringComparison.OrdinalIgnoreCase)))
+                    return true;
+            }
+
+            return false;
+        }
+
     }
 }

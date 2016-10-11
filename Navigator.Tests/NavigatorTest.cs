@@ -123,6 +123,20 @@ namespace Navigator.Tests
             Assert.AreEqual("url:3.0", vc.Match("ios", "3.0", "zhrren").Url);
         }
 
+        [TestMethod]
+        public void 编译版本号不正确()
+        {
+            var rules = new List<Release>()
+            {
+                CreatePublish("1.0.0.1",
+                    CreateRule("*","2.0","*","url:1.0"), null),
+                CreatePublish("1.0.0.2",
+                    CreateRule("*","2.0","*","url:2.0"), null),
+            };
+            var vc = CreateNavigator(rules, null);
+            Assert.AreEqual("url:2.0", vc.Match("android", "2.0", "zhrren").Url);
+        }
+
         #region 工具方法
         private Mark.Navigator.Navigator CreateNavigator(List<Release> releases, List<Group> groups)
         {

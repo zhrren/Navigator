@@ -47,5 +47,16 @@ namespace Navigator.Tests
             match = vc.Match("ios", "2.8.6", "18925179135");
             Assert.AreEqual("http://m.wfzkd.com/v/1.0.0/#!/auth?", match.Url);
         }
+
+
+        [TestMethod]
+        public void 多个版本_不能取得最新的10061()
+        {
+            SettingsManager<Settings> settings = new SettingsManager<Settings>();
+            var renew = settings.Renew("多个版本_不能取得最新的10061.json");
+            var vc = new Mark.Navigator.Navigator(renew.Release, null);
+            var match = vc.Match("android", "2.0.0", "");
+            Assert.AreEqual("http://things.loocaa.com/apps/update/things_2.0.0.10061_d34ec788.wgt", match.Url);
+        }
     }
 }
